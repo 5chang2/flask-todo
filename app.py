@@ -1,8 +1,10 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,request,redirect
 app = Flask(__name__)
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+
+import datetime
 
 from models import db, Todo
 
@@ -18,15 +20,26 @@ migrate = Migrate(app,db)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    todos = Todo.query.all()
+    return render_template("index.html",todos=todos)
     
 @app.route("/new")
 def new():
     return render_template("new.html")
 
-@app.route("/create")
+@app.route("/create", methods=["POST"])
 def create():
-    pass
+    title = request.form["title"]
+    deadline = request.form["deadline"]
+    deadline = datetime.datetime.strptime(deadline,'%Y-%m-%d')
+
+    todo = Todo(title=title, deadline=deadline)
+    
+    db.session.add(todo)
+    db.session.commit()
+    
+    return redirect('/')
+    
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=8080,debug=True)

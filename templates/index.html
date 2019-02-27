@@ -2,4 +2,12 @@
    
 {% block bb %}
 <h1>여기는 index입니다.</h1>
+    {% for todo in todos %}
+        <div class="jumbotron">
+          <h1 class="display-4">{{todo.title}}</h1>
+          <p class="lead">{{todo.deadline}}</p>
+          <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        </div>
+    {% endfor %}
+
 {% endblock %}
